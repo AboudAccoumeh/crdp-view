@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Official exam papers for all Lebanese branches and sessions, in Arabic, French and English.">
+<meta name="theme-color" content="#0b7a4b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>مباريات الامتحانات الرسمية</title>
 <style>
   :root{
@@ -64,6 +70,12 @@
   }
   .lang-switch button:hover{opacity:1}
   .lang-switch button.active{background:#fff;color:var(--green-dark);opacity:1;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .install-btn{
+    appearance:none;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);
+    color:#fff;font:inherit;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;
+    cursor:pointer;white-space:nowrap;backdrop-filter:blur(4px);
+  }
+  .install-btn:hover{background:rgba(255,255,255,.26)}
 
   /* ---------- layout ---------- */
   main{margin-top:-34px;padding-bottom:40px}
@@ -179,6 +191,7 @@
         <button type="button" data-lang="fr">Français</button>
         <button type="button" data-lang="en">English</button>
       </div>
+      <button type="button" class="install-btn" id="installBtn" hidden></button>
     </div>
   </div>
 </header>
@@ -243,7 +256,7 @@
       subtitle:"كل المراحل والدورات في مكان واحد",
       level:"المرحلة", subject:"المادة", year:"السنة", session:"الدورة",
       open:"فتح", download:"تحميل", corrections:"أسس التصحيح والإجابات النموذجية",
-      docs:"وثيقة", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
+      docs:"وثيقة", install:"تثبيت التطبيق", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
       source:"المصدر:",
       special:"احتياجات خاصة", correction:"تصحيح",
       normal:"دورة عادية", exceptional:"دورة استثنائية", specialSession:"دورة خاصة",
@@ -269,7 +282,7 @@
       subtitle:"Tous les niveaux et toutes les sessions au même endroit",
       level:"Niveau", subject:"Matière", year:"Année", session:"Session",
       open:"Ouvrir", download:"Télécharger", corrections:"Corrigés et barèmes",
-      docs:"document(s)", noResults:"Aucun document disponible pour cette sélection.",
+      docs:"document(s)", install:"Installer l'application", noResults:"Aucun document disponible pour cette sélection.",
       source:"Source :",
       special:"Besoins spéciaux", correction:"Corrigé",
       normal:"Session normale", exceptional:"Session exceptionnelle", specialSession:"Session spéciale",
@@ -295,7 +308,7 @@
       subtitle:"All levels and sessions in one place",
       level:"Level", subject:"Subject", year:"Year", session:"Session",
       open:"Open", download:"Download", corrections:"Marking schemes & answer keys",
-      docs:"document(s)", noResults:"No documents available for this selection.",
+      docs:"document(s)", install:"Install app", noResults:"No documents available for this selection.",
       source:"Source:",
       special:"Special needs", correction:"Correction",
       normal:"Regular session", exceptional:"Exceptional session", specialSession:"Special session",
@@ -562,6 +575,7 @@
     $("lbl-year").textContent = lang.year;
     $("lbl-session").textContent = lang.session;
     $("lbl-corrections").textContent = lang.corrections;
+    $("installBtn").textContent = lang.install;
     document.title = lang.title;
     var buttons = document.querySelectorAll(".lang-switch button");
     for(var i=0;i<buttons.length;i++){
@@ -596,6 +610,37 @@
     var saved = localStorage.getItem("exam-lang");
     if(saved && I18N[saved]) state.lang = saved;
   }catch(e){}
+
+  // PWA install prompt (Chrome/Edge). The button only appears when the
+  // browser says the page is installable; iOS users can use Safari's
+  // Share -> Add to Home Screen action instead.
+  var deferredPrompt = null;
+  var installBtn = $("installBtn");
+  window.addEventListener("beforeinstallprompt", function(event){
+    event.preventDefault();
+    deferredPrompt = event;
+    installBtn.hidden = false;
+  });
+  installBtn.addEventListener("click", function(){
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){
+      deferredPrompt = null;
+      installBtn.hidden = true;
+    });
+  });
+  window.addEventListener("appinstalled", function(){
+    deferredPrompt = null;
+    installBtn.hidden = true;
+  });
+
+  if("serviceWorker" in navigator && location.protocol !== "file:"){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("./sw.js").catch(function(err){
+        console.warn("Service worker registration failed:", err);
+      });
+    });
+  }
 
   // pick a sensible default level: the first one with data
   var firstLevel = LEVELS.filter(function(l){ return availableSubjects(l).length; })[0];

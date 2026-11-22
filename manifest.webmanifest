@@ -1,0 +1,20 @@
+{
+  "name": "مباريات الامتحانات الرسمية — Official Exam Papers",
+  "short_name": "Exam Papers",
+  "description": "Official exam papers for all Lebanese branches and sessions, in Arabic, French and English.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#eef3f0",
+  "theme_color": "#0b7a4b",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

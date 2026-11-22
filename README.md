@@ -19,6 +19,11 @@ the source is credited only in a small link at the bottom of the page.
 - Normal papers are shown first. Marking schemes are separated, and
   special-needs / blind papers are hidden by default behind a clearly
   labelled toggle that shows how many are hidden.
+- Papers open in an in-app viewer instead of leaving the installed app.
+  The source doesn't allow cross-origin downloads, so the download button
+  falls back to that same in-app viewer rather than opening a browser tab.
+- Your last language, level, subject, year, session and special-needs toggle
+  are remembered locally and restored on the next visit.
 - Installable progressive web app (PWA) with an offline app shell.
 
 ## Deploying to GitHub Pages
@@ -34,9 +39,11 @@ works both from a GitHub Pages project subpath and from a custom domain root.
 
 **Installing on a phone**
 
-- Android / Chrome or Edge: visit the site once online. An **Install app**
-  button appears in the header; tap it, or use the browser menu → *Install app*.
-- iPhone / Safari: visit the site, then **Share → Add to Home Screen**.
+- Android / Chrome or Edge: visit the site once online, then tap **Install app**
+  in the header (or the browser menu → *Install app*). Avoid *Add shortcut to
+  home screen* — that only creates a web link, not an installed app.
+- iPhone / Safari: open the site in **Safari**, then **Share → Add to Home
+  Screen**. Chrome on iOS can only create a shortcut.
 
 The first visit must be online so the service worker can cache the app.
 After that, the interface and the whole exam index work offline; opening a

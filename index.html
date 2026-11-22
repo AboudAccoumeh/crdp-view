@@ -161,6 +161,28 @@
   }
   [hidden]{display:none !important}
   html[dir="rtl"] .doc-title{text-align:right}
+
+  /* ---------- in-app PDF viewer ---------- */
+  .viewer{
+    position:fixed;inset:0;z-index:50;background:#0d1a14;color:#fff;
+    display:flex;flex-direction:column;
+  }
+  .viewer-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 16px;background:#0a5e3a;flex-wrap:wrap;
+  }
+  .viewer-bar .viewer-title{font-size:14px;font-weight:700;overflow-wrap:anywhere}
+  .viewer-bar .viewer-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .viewer-bar .mini{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff}
+  .viewer-bar .mini:hover{background:rgba(255,255,255,.24)}
+  .viewer iframe{flex:1;width:100%;border:0;background:#fff;min-height:0}
+  .viewer-note{
+    font-size:12px;padding:8px 16px;background:#123;color:#fff;
+  }
+  .install-help{
+    margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5;
+  }
+  .install-help strong{color:var(--ink)}
   @media (max-width:560px){
     .panel{padding:18px 16px}
     .result-head,.docs,.source{padding-inline:16px}
@@ -229,6 +251,7 @@
         <span id="lbl-show-special"></span>
       </label>
     </div>
+    <div class="install-help" id="installHelp"></div>
   </section>
 
   <section class="result" aria-live="polite">
@@ -249,6 +272,18 @@
   </section>
 </main>
 
+<div class="viewer" id="viewer" hidden>
+  <div class="viewer-bar">
+    <span class="viewer-title" id="viewer-title"></span>
+    <div class="viewer-actions">
+      <button type="button" class="mini" id="viewer-download"></button>
+      <button type="button" class="mini solid" id="viewer-close"></button>
+    </div>
+  </div>
+  <div class="viewer-note" id="viewer-note" hidden></div>
+  <iframe id="viewer-frame" title="PDF viewer" allow="fullscreen"></iframe>
+</div>
+
 <script src="data.js"></script>
 <script>
 (function(){
@@ -267,7 +302,10 @@
       subtitle:"كل المراحل والدورات في مكان واحد",
       level:"المرحلة", subject:"المادة", year:"السنة", session:"الدورة",
       open:"فتح", download:"تحميل", corrections:"أسس التصحيح والإجابات النموذجية",
-      docs:"وثيقة", install:"تثبيت التطبيق", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
+      docs:"وثيقة", install:"تثبيت التطبيق", close:"إغلاق",
+      viewerDownload:"تنزيل", downloadNote:"التنزيل غير متاح من هذا المصدر؛ تم فتح الورقة في العارض داخل التطبيق.",
+      installHelp:"للتثبيت: على أندرويد استخدم زر «تثبيت التطبيق» أو قائمة المتصفح ← تثبيت التطبيق. على iPhone افتح الموقع في Safari ثم مشاركة ← إضافة إلى الشاشة الرئيسية.",
+      noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
       source:"المصدر:",
       special:"احتياجات خاصة", showSpecial:"إظهار امتحانات ذوي الاحتياجات الخاصة", correction:"تصحيح",
       normal:"دورة عادية", exceptional:"دورة استثنائية", specialSession:"دورة خاصة",
@@ -293,7 +331,10 @@
       subtitle:"Tous les niveaux et toutes les sessions au même endroit",
       level:"Niveau", subject:"Matière", year:"Année", session:"Session",
       open:"Ouvrir", download:"Télécharger", corrections:"Corrigés et barèmes",
-      docs:"document(s)", install:"Installer l'application", noResults:"Aucun document disponible pour cette sélection.",
+      docs:"document(s)", install:"Installer l'application", close:"Fermer",
+      viewerDownload:"Télécharger", downloadNote:"Le téléchargement n'est pas disponible depuis cette source ; le sujet est ouvert dans l'application.",
+      installHelp:"Pour installer : sur Android, utilisez le bouton « Installer l'application » ou le menu du navigateur. Sur iPhone, ouvrez le site dans Safari puis Partager ← Sur l'écran d'accueil.",
+      noResults:"Aucun document disponible pour cette sélection.",
       source:"Source :",
       special:"Besoins spéciaux", showSpecial:"Afficher les épreuves adaptées", correction:"Corrigé",
       normal:"Session normale", exceptional:"Session exceptionnelle", specialSession:"Session spéciale",
@@ -319,7 +360,10 @@
       subtitle:"All levels and sessions in one place",
       level:"Level", subject:"Subject", year:"Year", session:"Session",
       open:"Open", download:"Download", corrections:"Marking schemes & answer keys",
-      docs:"document(s)", install:"Install app", noResults:"No documents available for this selection.",
+      docs:"document(s)", install:"Install app", close:"Close",
+      viewerDownload:"Download", downloadNote:"Downloading from this source is not available; the paper is open in the app viewer instead.",
+      installHelp:"To install: on Android use the “Install app” button or the browser menu → Install app. On iPhone, open this site in Safari then Share → Add to Home Screen.",
+      noResults:"No documents available for this selection.",
       source:"Source:",
       special:"Special needs", showSpecial:"Show special-needs papers", correction:"Correction",
       normal:"Regular session", exceptional:"Exceptional session", specialSession:"Special session",
@@ -342,7 +386,30 @@
   };
 
   var state = { lang:"ar", level:"sv", subject:"math", year:null, kind:"normal", showSpecial:false };
+  var STORAGE_KEY = "exam-viewer-state";
   var $ = function(id){ return document.getElementById(id); };
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        lang:state.lang, level:state.level, subject:state.subject,
+        year:state.year, kind:state.kind, showSpecial:state.showSpecial
+      }));
+    }catch(e){}
+  }
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      var saved = JSON.parse(raw);
+      if(saved.lang && I18N[saved.lang]) state.lang = saved.lang;
+      if(LEVELS.indexOf(saved.level) !== -1) state.level = saved.level;
+      if(SUBJECTS.indexOf(saved.subject) !== -1) state.subject = saved.subject;
+      if(saved.year) state.year = String(saved.year);
+      if(saved.kind === "normal" || saved.kind === "exceptional") state.kind = saved.kind;
+      state.showSpecial = !!saved.showSpecial;
+    }catch(e){}
+  }
 
   function t(key){ return I18N[state.lang][key]; }
   function tr(group, key){ return (I18N[state.lang][group]||{})[key] || key; }
@@ -403,6 +470,42 @@
     return "https://docs.google.com/gview?embedded=true&url=" + encodeURIComponent(url);
   }
 
+  var viewerDoc = null;
+  function openViewer(doc){
+    viewerDoc = doc;
+    $("viewer-title").textContent = tr("subjects", state.subject) + " — " + state.year;
+    $("viewer-note").hidden = true;
+    $("viewer-frame").src = gview(doc.url);
+    $("viewer").hidden = false;
+  }
+  function closeViewer(){
+    $("viewer").hidden = true;
+    $("viewer-frame").src = "about:blank";
+    viewerDoc = null;
+  }
+  function downloadDoc(doc){
+    // The source has no CORS header, so a direct cross-origin download opens
+    // the browser. Try an in-page blob download; if the source blocks it,
+    // keep the paper inside the app instead of leaving it.
+    fetch(doc.url, {mode:"cors"}).then(function(response){
+      if(!response.ok) throw new Error("HTTP " + response.status);
+      return response.blob();
+    }).then(function(blob){
+      var objectUrl = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = doc.url.split("/").pop() || "exam.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(objectUrl); }, 30000);
+    }).catch(function(){
+      openViewer(doc);
+      $("viewer-note").textContent = t("downloadNote");
+      $("viewer-note").hidden = false;
+    });
+  }
+
   function docNode(doc, primary){
     var el = document.createElement("div");
     el.className = "doc";
@@ -436,21 +539,18 @@
 
     var actions = document.createElement("div");
     actions.className = "doc-actions";
-    var open = document.createElement("a");
+    var open = document.createElement("button");
+    open.type = "button";
     open.className = "mini" + (primary ? " solid" : "");
-    open.href = gview(doc.url);
-    open.target = "_blank";
-    open.rel = "noopener";
     open.textContent = t("open");
+    open.addEventListener("click", function(){ openViewer(doc); });
     actions.appendChild(open);
 
-    var down = document.createElement("a");
+    var down = document.createElement("button");
+    down.type = "button";
     down.className = "mini";
-    down.href = doc.url;
-    down.target = "_blank";
-    down.rel = "noopener";
-    down.setAttribute("download", "");
     down.textContent = t("download");
+    down.addEventListener("click", function(){ downloadDoc(doc); });
     actions.appendChild(down);
 
     el.appendChild(actions);
@@ -593,6 +693,9 @@
     $("lbl-session").textContent = lang.session;
     $("lbl-corrections").textContent = lang.corrections;
     $("installBtn").textContent = lang.install;
+    $("installHelp").textContent = lang.installHelp;
+    $("viewer-close").textContent = lang.close;
+    $("viewer-download").textContent = lang.viewerDownload;
     document.title = lang.title;
     var buttons = document.querySelectorAll(".lang-switch button");
     for(var i=0;i<buttons.length;i++){
@@ -607,6 +710,7 @@
     renderYears();
     renderSessions();
     renderResult();
+    saveState();
   }
 
   if(!DATA || !DATA.levels){
@@ -619,18 +723,23 @@
   for(var i=0;i<langButtons.length;i++){
     langButtons[i].addEventListener("click", function(){
       state.lang = this.dataset.lang;
-      try{ localStorage.setItem("exam-lang", state.lang); }catch(e){}
       renderAll();
     });
   }
-  try{
-    var saved = localStorage.getItem("exam-lang");
-    if(saved && I18N[saved]) state.lang = saved;
-  }catch(e){}
+  loadState();
 
   $("showSpecial").addEventListener("change", function(){
     state.showSpecial = this.checked;
     renderResult();
+    saveState();
+  });
+
+  $("viewer-close").addEventListener("click", closeViewer);
+  $("viewer-download").addEventListener("click", function(){
+    if(viewerDoc) downloadDoc(viewerDoc);
+  });
+  document.addEventListener("keydown", function(event){
+    if(event.key === "Escape" && !$("viewer").hidden) closeViewer();
   });
 
   // PWA install prompt (Chrome/Edge). The button only appears when the
@@ -664,9 +773,11 @@
     });
   }
 
-  // pick a sensible default level: the first one with data
-  var firstLevel = LEVELS.filter(function(l){ return availableSubjects(l).length; })[0];
-  if(firstLevel) state.level = firstLevel;
+  // Only fall back to a default when no saved level is usable.
+  var levelsWithData = LEVELS.filter(function(l){ return availableSubjects(l).length; });
+  if(levelsWithData.indexOf(state.level) === -1){
+    state.level = levelsWithData[0] || "brevet";
+  }
   ensureSelection();
   renderAll();
 })();

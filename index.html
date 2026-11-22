@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>crdp session</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<style type="text/css">
+	body{
+		background:#ddd;
+	}
+	#container{
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		flex-direction:column;
+	}
+	#container h1{
+		margin:8px 0;
+		text-decoration-line:underline;
+	}
+	#container div{
+		margin: 20px 0;
+		width:90vw;
+		overflow:hidden;
+	}
+	#container div input[type="radio"]{
+		display:none;
+	}
+	#container div label{
+		display:block;
+		width:100%;
+		padding:10px;
+		text-align:center;
+		font-weight:900;
+		background:#fff;
+	}
+	#container div input[type="radio"]:checked + label{
+		background:lightgreen;
+	}
+	#buttons{
+		display:flex;
+		flex-direction:row;
+	}
+	#container div a{
+		text-decoration:none;
+		font-size:22px;
+		font-weiht:500;
+		padding:10px;
+		background:lightgreen;
+		color:#fff;
+		margin: 0 auto;
+		border-radius:20px;
+	}
+</style>
+<script data-ad-client="ca-pub-4280006255233463" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+<body>
+<div id="container">
+	<h1>SV</h1>
+	<div id="m">
+		<input data-name="bio" type="radio" id="biologie" name="m" checked="checked" />
+		<label for="biologie">Biologie</label>
+		<input data-name="math" type="radio" id="math" name="m"/>
+		<label for="math">Math</label>
+		<input data-name="phy" type="radio" id="physique" name="m"/>
+		<label for="physique">Physique</label>
+		<input data-name="chimie" type="radio" id="chimie" name="m"/>
+		<label for="chimie">Chimie</label>
+	</div>
+	<div id="years">
+		<input data-name="2019" type="radio" id="s2019" name="y" checked="checked" />
+		<label for="s2019">2019</label>
+		<input data-name="2018" type="radio" id="s2018" name="y"/>
+		<label for="s2018">2018</label>
+		<input data-name="2017" type="radio" id="s2017" name="y"/>
+		<label for="s2017">2017</label>
+		<input data-name="2016" type="radio" id="s2016" name="y"/>
+		<label for="s2016">2016</label>
+		<input data-name="2015" type="radio" id="s2015" name="y"/>
+		<label for="s2015">2015</label>
+		<input data-name="2013" type="radio" id="s2013" name="y"/>
+		<label for="s2013">2013</label>
+		<input data-name="2012" type="radio" id="s2012" name="y"/>
+		<label for="s2012">2012</label>
+		<input data-name="2011" type="radio" id="s2011" name="y"/>
+		<label for="s2011">2011</label>
+		<input data-name="2009" type="radio" id="s2009" name="y"/>
+		<label for="s2009">2009</label>
+		<input data-name="2008" type="radio" id="s2008" name="y"/>
+		<label for="s2008">2008</label>
+		<input data-name="2007" type="radio" id="s2007" name="y"/>
+		<label for="s2007">2007</label>
+		<input data-name="2006" type="radio" id="s2006" name="y"/>
+		<label for="s2006">2006</label>
+		<input data-name="2005" type="radio" id="s2005" name="y"/>
+		<label for="s2005">2005</label>
+		<input data-name="2004" type="radio" id="s2004" name="y"/>
+		<label for="s2004">2004</label>
+	</div>
+	<div id="number">
+		<input data-name="0" type="radio" id="s1" name="n" checked="checked" />
+		<label for="s1">عادية</label>
+		<input data-name="1" type="radio" id="s2" name="n"/>
+		<label for="s2">استثنائية</label>
+	</div>
+	<div id="buttons">
+		<a id="open" href="#">open</a>
+		<a id="down" href="#" download="download">download</a>
+	</div>
+</div>
+<script type="text/javascript">
+var s = {
+	"fr":[
+		{/*1*/
+			"math":{
+				"2004":"https://www.crdp.org/sites/default/files/201702281142191.pdf",
+				"2005":"",
+				"2006":"https://www.crdp.org/sites/default/files/201703200119005.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703161019341.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201705171056101.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702221041561.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702160555191.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201702210925523.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201701300653175.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201701260826234.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702080819225.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201708081124511.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201807160939104.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201909160134123.pdf"
+			},
+			"bio":{
+				"2004":"",
+				"2005":"https://www.crdp.org/sites/default/files/201704050809051.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703210824175.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703160949101.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201703091239244.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702221034411.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702160741331.pdf",
+				"2012":"",
+				"2013":"https://www.crdp.org/sites/default/files/201701270111305.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201705090731091.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702080931453.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201708081042261.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201808011224381.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201910101225235.pdf"
+			},
+			"phy":{
+				"2004":"https://www.crdp.org/sites/default/files/201702281136211.pdf",
+				"2005":"https://www.crdp.org/sites/default/files/201704050656211.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703211048091.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703161023121.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201705171053071.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702221047391.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702160738191.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201702210924033.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201701300659285.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201701260834213.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702080839415.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201708081102461.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201808011257571.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201909190106435.pdf"
+			},
+			"chimie":{
+				"2004":"https://www.crdp.org/sites/default/files/201702281139521.pdf",
+				"2005":"https://www.crdp.org/sites/default/files/201704050702461.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703210956531.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703161015331.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201703091140443.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702221037331.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702160552441.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201705160728001.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201701300620105.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201701260747195.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702080806425.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201708081054301.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201807180323341.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201909111147253.pdf"
+			}
+		},
+		{/*2*/
+			"math":{
+				"2004":"https://www.crdp.org/sites/default/files/201703080707261.pdf",
+				"2005":"https://www.crdp.org/sites/default/files/201705020957061.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703221254573.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703230608411.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201706150235491.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702240759051.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702171227411.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201705170931101.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201702070556151.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201702061210125.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702170646233.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201801180559221.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201811050603473.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201910101241385.pdf"
+			},
+			"bio":{
+				"2004":"",
+				"2005":"",
+				"2006":"https://www.crdp.org/sites/default/files/201703230814501.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703230814501.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201703130718245.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702240747321.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702171240201.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201702210941455.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201702080719031.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201702061218453.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702170826253.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201801110818371.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201811160304205.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201911211122063.pdf"
+			},
+			"phy":{
+				"2004":"https://www.crdp.org/sites/default/files/201703080713291.pdf",
+				"2005":"https://www.crdp.org/sites/default/files/201704071233541.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703221255593.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703230632211.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201703130717035.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702240752401.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702171248461.pdf",
+				"2012":"",
+				"2013":"https://www.crdp.org/sites/default/files/201702070606471.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201702061155324.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702170700325.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201801151132271.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201811070832353.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201911080740103.pdf"
+			},
+			"chimie":{
+				"2004":"https://www.crdp.org/sites/default/files/201703080733551.pdf",
+				"2005":"https://www.crdp.org/sites/default/files/201704071236551.pdf",
+				"2006":"https://www.crdp.org/sites/default/files/201703221137273.pdf",
+				"2007":"https://www.crdp.org/sites/default/files/201703220814321.pdf",
+				"2008":"https://www.crdp.org/sites/default/files/201703130713305.pdf",
+				"2009":"https://www.crdp.org/sites/default/files/201702240755141.pdf",
+				"2011":"https://www.crdp.org/sites/default/files/201702171214301.pdf",
+				"2012":"https://www.crdp.org/sites/default/files/201705170927141.pdf",
+				"2013":"https://www.crdp.org/sites/default/files/201702070545121.pdf",
+				"2015":"https://www.crdp.org/sites/default/files/201705100816155.pdf",
+				"2016":"https://www.crdp.org/sites/default/files/201702170626395.pdf",
+				"2017":"https://www.crdp.org/sites/default/files/201801151035511.pdf",
+				"2018":"https://www.crdp.org/sites/default/files/201811031244034.pdf",
+				"2019":"https://www.crdp.org/sites/default/files/201912061121393.pdf"
+			}
+		}
+	]
+};
+
+var m = document.getElementsByName("m");
+var y = document.getElementsByName("y");
+var n = document.getElementsByName("n");
+var open = document.getElementById("open");
+var down = document.getElementById("down");
+var lang = "fr";
+var num = "0";
+var mat = "bio";
+var year = "2019";
+changeLinks(year,mat,num);
+
+function changeLinks(ye,ma,nu){
+	var dstr = ye+ma+nu;
+	var link = s[lang][parseInt(nu)][ma][ye];
+	open.href = "https://docs.google.com/gview?embedded=true&url=" + link;
+	down.href = link;
+	down.download = year+mat+(parseInt(num)+1);
+}
+
+m.forEach(el =>{
+	el.addEventListener("change",function(){
+		if(el.checked){
+			mat = el.dataset.name;
+			changeLinks(year,mat,num);
+		}
+	});
+});
+y.forEach(el =>{
+	el.addEventListener("change",function(){
+		if(el.checked){
+			year = el.dataset.name;
+			changeLinks(year,mat,num);
+		}
+	});
+});
+n.forEach(el =>{
+	el.addEventListener("change",function(){
+		if(el.checked){
+			num = el.dataset.name;
+			changeLinks(year,mmat,num);
+		}
+	});
+});
+
+</script>
+</body>
+</html>

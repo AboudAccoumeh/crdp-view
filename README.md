@@ -66,5 +66,6 @@ This rewrites `data.js`. The icon set can be regenerated with
 | `manifest.webmanifest` | PWA metadata |
 | `sw.js` | Service worker (offline caching) |
 | `icons/` | PWA icons (192/512, normal and maskable) |
-| `make_icons.py` | Regenerates `icons/` |
+| `favicon.ico`, `favicon.svg` | Browser tab icons |
+| `make_icons.py` | Regenerates `icons/` and the favicons |
 | `.nojekyll` | Tells GitHub Pages to serve files as-is |

@@ -45,9 +45,26 @@ def rounded_icon(size, maskable=False):
 
 def main():
     OUT.mkdir(exist_ok=True)
+    root = OUT.parent
     for size in (192, 512):
         rounded_icon(size).save(OUT / f"icon-{size}.png")
         rounded_icon(size, maskable=True).save(OUT / f"icon-maskable-{size}.png")
+
+    # Browser tab icon, in both vector and classic ICO form.
+    (root / "favicon.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        'stroke="#fff" stroke-width="1.8" stroke-linecap="round" '
+        'stroke-linejoin="round">\n'
+        '  <rect width="24" height="24" rx="5" fill="#0b7a4b" stroke="none"/>\n'
+        '  <path d="M6.5 4.5h7l3.5 3.5v11a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1.5z"/>\n'
+        '  <path d="M13.5 4.5V8H17"/>\n'
+        '  <path d="M9 12h6M9 15h6M9 18h4"/>\n'
+        '</svg>\n', encoding="utf-8")
+    rounded_icon(256).save(root / "favicon.ico",
+                           sizes=[(16, 16), (32, 32), (48, 48)])
+
+    for path in sorted(root.glob("favicon.*")):
+        print(path)
     for path in sorted(OUT.iterdir()):
         print(path)
 

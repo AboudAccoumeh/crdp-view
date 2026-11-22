@@ -2,7 +2,7 @@
    All URLs are relative to this file, so the app works from a GitHub Pages
    project path such as https://username.github.io/repository/ as well as
    from a domain root. Bump CACHE when the app shell changes. */
-var CACHE = "exam-papers-v2";
+var CACHE = "exam-papers-v3";
 var SHELL = [
   "./",
   "./index.html",

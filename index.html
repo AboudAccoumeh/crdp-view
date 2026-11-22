@@ -1,295 +1,596 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-<title>crdp session</title>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<style type="text/css">
-	body{
-		background:#ddd;
-	}
-	#container{
-		display:flex;
-		align-items:center;
-		justify-content:center;
-		flex-direction:column;
-	}
-	#container h1{
-		margin:8px 0;
-		text-decoration-line:underline;
-	}
-	#container div{
-		margin: 20px 0;
-		width:90vw;
-		overflow:hidden;
-	}
-	#container div input[type="radio"]{
-		display:none;
-	}
-	#container div label{
-		display:block;
-		width:100%;
-		padding:10px;
-		text-align:center;
-		font-weight:900;
-		background:#fff;
-	}
-	#container div input[type="radio"]:checked + label{
-		background:lightgreen;
-	}
-	#buttons{
-		display:flex;
-		flex-direction:row;
-	}
-	#container div a{
-		text-decoration:none;
-		font-size:22px;
-		font-weiht:500;
-		padding:10px;
-		background:lightgreen;
-		color:#fff;
-		margin: 0 auto;
-		border-radius:20px;
-	}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CRDP Lebanon — official exam papers for all branches and sessions.">
+<title>CRDP — مباريات الامتحانات الرسمية</title>
+<style>
+  :root{
+    --green:#0b7a4b;
+    --green-dark:#075c38;
+    --green-soft:#e3f4ec;
+    --ink:#13231c;
+    --muted:#65766d;
+    --line:#dfe8e3;
+    --paper:#ffffff;
+    --bg:#eef3f0;
+    --shadow:0 18px 45px -22px rgba(9,60,38,.45);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",Tahoma,"Noto Kufi Arabic","Noto Sans Arabic",Arial,sans-serif;
+    background:
+      radial-gradient(1200px 500px at 85% -120px, #cfe9dc 0%, transparent 60%),
+      radial-gradient(900px 450px at 0% 0%, #dcefe5 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  a{color:inherit}
+  .wrap{width:min(1120px,94vw);margin:0 auto}
+
+  /* ---------- header ---------- */
+  header{
+    background:linear-gradient(135deg,#0a6a42 0%,#0b7a4b 45%,#0f8f59 100%);
+    color:#fff;
+    padding:22px 0 58px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";position:absolute;inset:auto -10% -120px -10%;height:190px;
+    background:radial-gradient(closest-side,rgba(255,255,255,.16),transparent);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:14px;min-width:0}
+  .mark{
+    width:52px;height:52px;border-radius:16px;flex:0 0 auto;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+    display:grid;place-items:center;font-weight:800;letter-spacing:.5px;font-size:15px;
+    backdrop-filter:blur(4px);
+  }
+  .brand h1{font-size:clamp(18px,2.4vw,26px);margin:0;line-height:1.25;font-weight:800}
+  .brand p{margin:3px 0 0;font-size:13px;opacity:.82}
+  .lang-switch{
+    display:flex;gap:4px;padding:4px;border-radius:999px;
+    background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.22);
+  }
+  .lang-switch button{
+    appearance:none;border:0;background:transparent;color:#fff;font:inherit;font-size:13px;
+    padding:8px 14px;border-radius:999px;cursor:pointer;opacity:.8;transition:.2s;white-space:nowrap;
+  }
+  .lang-switch button:hover{opacity:1}
+  .lang-switch button.active{background:#fff;color:var(--green-dark);opacity:1;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+  /* ---------- layout ---------- */
+  main{margin-top:-34px;padding-bottom:40px}
+  .panel{
+    background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.7);padding:24px;
+  }
+  .field{padding:16px 0;border-bottom:1px dashed var(--line)}
+  .field:first-child{padding-top:4px}
+  .field:last-child{border-bottom:0;padding-bottom:4px}
+  .field-head{display:flex;align-items:baseline;gap:10px;margin-bottom:11px}
+  .field-head h2{font-size:13px;margin:0;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+  .field-head .hint{font-size:12px;color:var(--muted);opacity:.8}
+  .choices{display:flex;flex-wrap:wrap;gap:8px}
+  .choice{
+    appearance:none;font:inherit;cursor:pointer;border:1px solid var(--line);
+    background:#f7faf8;color:var(--ink);padding:9px 15px;border-radius:12px;
+    font-size:14px;line-height:1.2;transition:.16s;text-align:center;
+  }
+  .choice:hover{border-color:#a9cfbc;background:#f0f8f4}
+  .choice[aria-pressed="true"]{
+    background:var(--green);border-color:var(--green);color:#fff;font-weight:700;
+    box-shadow:0 6px 16px -8px rgba(11,122,75,.8);
+  }
+  .choice .badge{display:inline-block;margin-inline-start:6px;font-size:11px;font-weight:700;opacity:.75}
+
+  /* ---------- result ---------- */
+  .result{
+    margin-top:22px;background:var(--paper);border-radius:var(--radius);
+    box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.7);overflow:hidden;
+  }
+  .result-head{
+    padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+  }
+  .result-head h2{margin:0;font-size:clamp(17px,2vw,21px)}
+  .result-head .meta{font-size:13px;color:var(--muted);margin:4px 0 0}
+  .summary{
+    background:var(--green-soft);color:var(--green-dark);font-weight:700;font-size:12px;
+    padding:6px 12px;border-radius:999px;white-space:nowrap;
+  }
+  .docs{padding:8px 24px 4px}
+  .doc{
+    display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;
+  }
+  .doc:last-child{border-bottom:0}
+  .doc-icon{
+    width:40px;height:40px;border-radius:11px;background:#fff2f2;color:#c62828;
+    display:grid;place-items:center;flex:0 0 auto;font-weight:800;font-size:11px;border:1px solid #ffd9d9;
+  }
+  .doc-main{flex:1 1 220px;min-width:0}
+  .doc-title{font-size:14px;font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+  .doc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .tag{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 7px;border-radius:5px;background:#eef2f0;color:#4c6258}
+  .tag.lang{background:#e7f0ff;color:#245aa8}
+  .tag.special{background:#fff3dd;color:#95610a}
+  .tag.correction{background:#f0e8ff;color:#6a3bb5}
+  .doc-actions{display:flex;gap:7px;flex-wrap:wrap}
+  .mini{
+    text-decoration:none;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:9px;
+    border:1px solid var(--line);background:#fff;transition:.16s;white-space:nowrap;
+  }
+  .mini:hover{border-color:#a9cfbc;background:#f2f9f5}
+  .mini.solid{background:var(--green);border-color:var(--green);color:#fff}
+  .mini.solid:hover{background:var(--green-dark)}
+
+  .empty{padding:26px 24px;color:var(--muted);font-size:14px;text-align:center}
+  .corrections{background:#fbf9ff;border-top:1px solid #efe9fb}
+  .corrections .field-head{padding:14px 24px 0;margin:0}
+  .corrections .field-head h2{color:#6a3bb5}
+  .source{padding:18px 24px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+  .source a{color:var(--green);font-weight:600;text-decoration:none}
+  .source a:hover{text-decoration:underline}
+  .error{
+    margin:22px 0;padding:18px;border-radius:14px;background:#fff4f4;border:1px solid #f3cccc;color:#8a2323;
+    font-size:14px;
+  }
+  [hidden]{display:none !important}
+  html[dir="rtl"] .doc-title{text-align:right}
+  @media (max-width:560px){
+    .panel{padding:18px 16px}
+    .result-head,.docs,.source{padding-inline:16px}
+    .brand p{display:none}
+    .lang-switch button{padding:7px 10px;font-size:12px}
+  }
 </style>
-<script data-ad-client="ca-pub-4280006255233463" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 <body>
-<div id="container">
-	<h1>SV</h1>
-	<div id="m">
-		<input data-name="bio" type="radio" id="biologie" name="m" checked="checked" />
-		<label for="biologie">Biologie</label>
-		<input data-name="math" type="radio" id="math" name="m"/>
-		<label for="math">Math</label>
-		<input data-name="phy" type="radio" id="physique" name="m"/>
-		<label for="physique">Physique</label>
-		<input data-name="chimie" type="radio" id="chimie" name="m"/>
-		<label for="chimie">Chimie</label>
-	</div>
-	<div id="years">
-		<input data-name="2019" type="radio" id="s2019" name="y" checked="checked" />
-		<label for="s2019">2019</label>
-		<input data-name="2018" type="radio" id="s2018" name="y"/>
-		<label for="s2018">2018</label>
-		<input data-name="2017" type="radio" id="s2017" name="y"/>
-		<label for="s2017">2017</label>
-		<input data-name="2016" type="radio" id="s2016" name="y"/>
-		<label for="s2016">2016</label>
-		<input data-name="2015" type="radio" id="s2015" name="y"/>
-		<label for="s2015">2015</label>
-		<input data-name="2013" type="radio" id="s2013" name="y"/>
-		<label for="s2013">2013</label>
-		<input data-name="2012" type="radio" id="s2012" name="y"/>
-		<label for="s2012">2012</label>
-		<input data-name="2011" type="radio" id="s2011" name="y"/>
-		<label for="s2011">2011</label>
-		<input data-name="2009" type="radio" id="s2009" name="y"/>
-		<label for="s2009">2009</label>
-		<input data-name="2008" type="radio" id="s2008" name="y"/>
-		<label for="s2008">2008</label>
-		<input data-name="2007" type="radio" id="s2007" name="y"/>
-		<label for="s2007">2007</label>
-		<input data-name="2006" type="radio" id="s2006" name="y"/>
-		<label for="s2006">2006</label>
-		<input data-name="2005" type="radio" id="s2005" name="y"/>
-		<label for="s2005">2005</label>
-		<input data-name="2004" type="radio" id="s2004" name="y"/>
-		<label for="s2004">2004</label>
-	</div>
-	<div id="number">
-		<input data-name="0" type="radio" id="s1" name="n" checked="checked" />
-		<label for="s1">عادية</label>
-		<input data-name="1" type="radio" id="s2" name="n"/>
-		<label for="s2">استثنائية</label>
-	</div>
-	<div id="buttons">
-		<a id="open" href="#">open</a>
-		<a id="down" href="#" download="download">download</a>
-	</div>
-</div>
-<script type="text/javascript">
-var s = {
-	"fr":[
-		{/*1*/
-			"math":{
-				"2004":"https://www.crdp.org/sites/default/files/201702281142191.pdf",
-				"2005":"",
-				"2006":"https://www.crdp.org/sites/default/files/201703200119005.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703161019341.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201705171056101.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702221041561.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702160555191.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201702210925523.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201701300653175.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201701260826234.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702080819225.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201708081124511.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201807160939104.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201909160134123.pdf"
-			},
-			"bio":{
-				"2004":"",
-				"2005":"https://www.crdp.org/sites/default/files/201704050809051.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703210824175.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703160949101.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201703091239244.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702221034411.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702160741331.pdf",
-				"2012":"",
-				"2013":"https://www.crdp.org/sites/default/files/201701270111305.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201705090731091.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702080931453.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201708081042261.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201808011224381.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201910101225235.pdf"
-			},
-			"phy":{
-				"2004":"https://www.crdp.org/sites/default/files/201702281136211.pdf",
-				"2005":"https://www.crdp.org/sites/default/files/201704050656211.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703211048091.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703161023121.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201705171053071.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702221047391.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702160738191.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201702210924033.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201701300659285.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201701260834213.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702080839415.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201708081102461.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201808011257571.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201909190106435.pdf"
-			},
-			"chimie":{
-				"2004":"https://www.crdp.org/sites/default/files/201702281139521.pdf",
-				"2005":"https://www.crdp.org/sites/default/files/201704050702461.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703210956531.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703161015331.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201703091140443.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702221037331.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702160552441.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201705160728001.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201701300620105.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201701260747195.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702080806425.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201708081054301.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201807180323341.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201909111147253.pdf"
-			}
-		},
-		{/*2*/
-			"math":{
-				"2004":"https://www.crdp.org/sites/default/files/201703080707261.pdf",
-				"2005":"https://www.crdp.org/sites/default/files/201705020957061.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703221254573.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703230608411.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201706150235491.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702240759051.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702171227411.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201705170931101.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201702070556151.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201702061210125.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702170646233.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201801180559221.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201811050603473.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201910101241385.pdf"
-			},
-			"bio":{
-				"2004":"",
-				"2005":"",
-				"2006":"https://www.crdp.org/sites/default/files/201703230814501.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703230814501.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201703130718245.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702240747321.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702171240201.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201702210941455.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201702080719031.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201702061218453.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702170826253.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201801110818371.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201811160304205.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201911211122063.pdf"
-			},
-			"phy":{
-				"2004":"https://www.crdp.org/sites/default/files/201703080713291.pdf",
-				"2005":"https://www.crdp.org/sites/default/files/201704071233541.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703221255593.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703230632211.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201703130717035.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702240752401.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702171248461.pdf",
-				"2012":"",
-				"2013":"https://www.crdp.org/sites/default/files/201702070606471.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201702061155324.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702170700325.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201801151132271.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201811070832353.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201911080740103.pdf"
-			},
-			"chimie":{
-				"2004":"https://www.crdp.org/sites/default/files/201703080733551.pdf",
-				"2005":"https://www.crdp.org/sites/default/files/201704071236551.pdf",
-				"2006":"https://www.crdp.org/sites/default/files/201703221137273.pdf",
-				"2007":"https://www.crdp.org/sites/default/files/201703220814321.pdf",
-				"2008":"https://www.crdp.org/sites/default/files/201703130713305.pdf",
-				"2009":"https://www.crdp.org/sites/default/files/201702240755141.pdf",
-				"2011":"https://www.crdp.org/sites/default/files/201702171214301.pdf",
-				"2012":"https://www.crdp.org/sites/default/files/201705170927141.pdf",
-				"2013":"https://www.crdp.org/sites/default/files/201702070545121.pdf",
-				"2015":"https://www.crdp.org/sites/default/files/201705100816155.pdf",
-				"2016":"https://www.crdp.org/sites/default/files/201702170626395.pdf",
-				"2017":"https://www.crdp.org/sites/default/files/201801151035511.pdf",
-				"2018":"https://www.crdp.org/sites/default/files/201811031244034.pdf",
-				"2019":"https://www.crdp.org/sites/default/files/201912061121393.pdf"
-			}
-		}
-	]
-};
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">CRDP</div>
+        <div>
+          <h1 id="title">مباريات الامتحانات الرسمية</h1>
+          <p id="subtitle">المركز التربوي للبحوث والإنماء — لبنان</p>
+        </div>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="ar">العربية</button>
+        <button type="button" data-lang="fr">Français</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+  </div>
+</header>
 
-var m = document.getElementsByName("m");
-var y = document.getElementsByName("y");
-var n = document.getElementsByName("n");
-var open = document.getElementById("open");
-var down = document.getElementById("down");
-var lang = "fr";
-var num = "0";
-var mat = "bio";
-var year = "2019";
-changeLinks(year,mat,num);
+<main class="wrap">
+  <div id="loadError" class="error" hidden>
+    Could not load <code>data.js</code>. Run <code>python scrape.py</code> first, then open this page.
+  </div>
 
-function changeLinks(ye,ma,nu){
-	var dstr = ye+ma+nu;
-	var link = s[lang][parseInt(nu)][ma][ye];
-	open.href = "https://docs.google.com/gview?embedded=true&url=" + link;
-	down.href = link;
-	down.download = year+mat+(parseInt(num)+1);
-}
+  <section class="panel" aria-label="Filters">
+    <div class="field">
+      <div class="field-head"><h2 id="lbl-level">المرحلة</h2></div>
+      <div class="choices" id="levels" role="group"></div>
+    </div>
+    <div class="field">
+      <div class="field-head"><h2 id="lbl-subject">المادة</h2></div>
+      <div class="choices" id="subjects" role="group"></div>
+    </div>
+    <div class="field">
+      <div class="field-head"><h2 id="lbl-year">السنة</h2></div>
+      <div class="choices" id="years" role="group"></div>
+    </div>
+    <div class="field">
+      <div class="field-head"><h2 id="lbl-session">الدورة</h2></div>
+      <div class="choices" id="sessions" role="group"></div>
+    </div>
+  </section>
 
-m.forEach(el =>{
-	el.addEventListener("change",function(){
-		if(el.checked){
-			mat = el.dataset.name;
-			changeLinks(year,mat,num);
-		}
-	});
-});
-y.forEach(el =>{
-	el.addEventListener("change",function(){
-		if(el.checked){
-			year = el.dataset.name;
-			changeLinks(year,mat,num);
-		}
-	});
-});
-n.forEach(el =>{
-	el.addEventListener("change",function(){
-		if(el.checked){
-			num = el.dataset.name;
-			changeLinks(year,mmat,num);
-		}
-	});
-});
+  <section class="result" aria-live="polite">
+    <div class="result-head">
+      <div>
+        <h2 id="result-title">—</h2>
+        <p class="meta" id="result-meta">—</p>
+      </div>
+      <span class="summary" id="result-count">0</span>
+    </div>
+    <div class="docs" id="docs"></div>
+    <div class="corrections" id="corrections" hidden>
+      <div class="field-head"><h2 id="lbl-corrections">أسس التصحيح</h2></div>
+      <div class="docs" id="correctionDocs"></div>
+    </div>
+    <div class="empty" id="empty" hidden></div>
+    <div class="source" id="source"></div>
+  </section>
+</main>
 
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var DATA = window.CRDP_DATA;
+  var LEVELS = ["brevet","se","sg","sv","sh"];
+  var SUBJECTS = ["math","physics","chemistry","biology","arabic","french","english",
+                  "history","geography","civics","philosophy","arabic_philosophy",
+                  "economics","sociology","other"];
+
+  var I18N = {
+    ar:{
+      dir:"rtl", lang:"ar",
+      title:"مباريات الامتحانات الرسمية",
+      subtitle:"المركز التربوي للبحوث والإنماء — لبنان",
+      level:"المرحلة", subject:"المادة", year:"السنة", session:"الدورة",
+      open:"فتح", download:"تحميل", corrections:"أسس التصحيح والإجابات النموذجية",
+      docs:"وثيقة", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
+      source:"المصدر: موقع المركز التربوي للبحوث والإنماء",
+      special:"احتياجات خاصة", correction:"تصحيح",
+      normal:"دورة عادية", exceptional:"دورة استثنائية", specialSession:"دورة خاصة",
+      levels:{
+        brevet:"الشهادة المتوسطة — الصف التاسع",
+        se:"اجتماع واقتصاد (SE)",
+        sg:"علوم عامة (SG)",
+        sv:"علوم الحياة (SV)",
+        sh:"آداب وإنسانيات (SH)"
+      },
+      subjects:{
+        math:"الرياضيات", physics:"الفيزياء", chemistry:"الكيمياء",
+        biology:"علوم الحياة", arabic:"اللغة العربية", french:"اللغة الفرنسية",
+        english:"اللغة الإنكليزية", history:"التاريخ", geography:"الجغرافيا",
+        civics:"التربية الوطنية", philosophy:"الفلسفة",
+        arabic_philosophy:"الفلسفة العربية", economics:"الاقتصاد",
+        sociology:"الاجتماع", other:"مواد أخرى"
+      }
+    },
+    fr:{
+      dir:"ltr", lang:"fr",
+      title:"Sujets des examens officiels",
+      subtitle:"Centre de Recherche et de Développement Pédagogiques — Liban",
+      level:"Niveau", subject:"Matière", year:"Année", session:"Session",
+      open:"Ouvrir", download:"Télécharger", corrections:"Corrigés et barèmes",
+      docs:"document(s)", noResults:"Aucun document disponible pour cette sélection.",
+      source:"Source : site du Centre de Recherche et de Développement Pédagogiques",
+      special:"Besoins spéciaux", correction:"Corrigé",
+      normal:"Session normale", exceptional:"Session exceptionnelle", specialSession:"Session spéciale",
+      levels:{
+        brevet:"Brevet — 9e année",
+        se:"Sciences économiques et sociales (SE)",
+        sg:"Sciences générales (SG)",
+        sv:"Sciences de la vie (SV)",
+        sh:"Lettres et sciences humaines (SH)"
+      },
+      subjects:{
+        math:"Mathématiques", physics:"Physique", chemistry:"Chimie",
+        biology:"Sciences de la vie", arabic:"Arabe", french:"Français",
+        english:"Anglais", history:"Histoire", geography:"Géographie",
+        civics:"Éducation civique", philosophy:"Philosophie",
+        arabic_philosophy:"Philosophie arabe", economics:"Économie",
+        sociology:"Sociologie", other:"Autres matières"
+      }
+    },
+    en:{
+      dir:"ltr", lang:"en",
+      title:"Official Exam Papers",
+      subtitle:"Educational Research and Development Center — Lebanon",
+      level:"Level", subject:"Subject", year:"Year", session:"Session",
+      open:"Open", download:"Download", corrections:"Marking schemes & answer keys",
+      docs:"document(s)", noResults:"No documents available for this selection.",
+      source:"Source: Educational Research and Development Center website",
+      special:"Special needs", correction:"Correction",
+      normal:"Regular session", exceptional:"Exceptional session", specialSession:"Special session",
+      levels:{
+        brevet:"Brevet — Grade 9",
+        se:"Economics & Sociology (SE)",
+        sg:"General Sciences (SG)",
+        sv:"Life Sciences (SV)",
+        sh:"Humanities (SH)"
+      },
+      subjects:{
+        math:"Mathematics", physics:"Physics", chemistry:"Chemistry",
+        biology:"Life Sciences", arabic:"Arabic", french:"French",
+        english:"English", history:"History", geography:"Geography",
+        civics:"Civics", philosophy:"Philosophy",
+        arabic_philosophy:"Arabic Philosophy", economics:"Economics",
+        sociology:"Sociology", other:"Other subjects"
+      }
+    }
+  };
+
+  var state = { lang:"ar", level:"sv", subject:"math", year:null, kind:"normal" };
+  var $ = function(id){ return document.getElementById(id); };
+
+  function t(key){ return I18N[state.lang][key]; }
+  function tr(group, key){ return (I18N[state.lang][group]||{})[key] || key; }
+  function levelData(level){ return (DATA && DATA.levels && DATA.levels[level]) || {}; }
+  function subjectData(level, subject){ return levelData(level)[subject] || {}; }
+
+  function availableSubjects(level){
+    var sub = levelData(level);
+    return SUBJECTS.filter(function(s){
+      var sessions = sub[s];
+      if(!sessions) return false;
+      return Object.keys(sessions).some(function(k){
+        var b = sessions[k];
+        return (b.normal && b.normal.length) || (b.exceptional && b.exceptional.length);
+      });
+    });
+  }
+
+  function availableYears(level, subject){
+    var sessions = subjectData(level, subject);
+    var seen = {};
+    Object.keys(sessions).forEach(function(k){
+      var parts = k.split("|");
+      seen[parts[0]] = true;
+    });
+    return Object.keys(seen).sort(function(a,b){ return b - a; });
+  }
+
+  function availableKinds(level, subject, year){
+    var sessions = subjectData(level, subject);
+    return ["normal","exceptional"].filter(function(kind){
+      var b = sessions[year + "|" + kind];
+      return b && b[kind] && b[kind].length;
+    });
+  }
+
+  function sessionMeta(year, kind){
+    var list = (DATA && DATA.sessions) || [];
+    for(var i=0;i<list.length;i++){
+      if(String(list[i].year) === String(year) && list[i].type === kind) return list[i];
+    }
+    return null;
+  }
+
+  function sortDocs(docs){
+    return docs.slice().sort(function(a,b){
+      return (a.correction?2:0) + (a.special?1:0) - ((b.correction?2:0) + (b.special?1:0));
+    });
+  }
+
+  function currentBucket(){
+    var sessions = subjectData(state.level, state.subject);
+    var bucket = sessions[state.year + "|" + state.kind];
+    return (bucket && bucket[state.kind]) || [];
+  }
+
+  function gview(url){
+    return "https://docs.google.com/gview?embedded=true&url=" + encodeURIComponent(url);
+  }
+
+  function docNode(doc, primary){
+    var el = document.createElement("div");
+    el.className = "doc";
+
+    var icon = document.createElement("div");
+    icon.className = "doc-icon";
+    icon.textContent = "PDF";
+    el.appendChild(icon);
+
+    var main = document.createElement("div");
+    main.className = "doc-main";
+    var title = document.createElement("div");
+    title.className = "doc-title";
+    title.textContent = tr("subjects", state.subject) + " — " + state.year;
+    main.appendChild(title);
+
+    var tags = document.createElement("div");
+    tags.className = "doc-tags";
+    function tag(txt, cls){
+      var s = document.createElement("span");
+      s.className = "tag" + (cls ? " " + cls : "");
+      s.textContent = txt;
+      tags.appendChild(s);
+    }
+    tag(doc.lang === "ar" ? "AR" : doc.lang === "fr" ? "FR" : "EN", "lang");
+    if(doc.special) tag(t("special"), "special");
+    if(doc.correction) tag(t("correction"), "correction");
+    main.appendChild(tags);
+    el.appendChild(main);
+
+    var actions = document.createElement("div");
+    actions.className = "doc-actions";
+    var open = document.createElement("a");
+    open.className = "mini" + (primary ? " solid" : "");
+    open.href = gview(doc.url);
+    open.target = "_blank";
+    open.rel = "noopener";
+    open.textContent = t("open");
+    actions.appendChild(open);
+
+    var down = document.createElement("a");
+    down.className = "mini";
+    down.href = doc.url;
+    down.target = "_blank";
+    down.rel = "noopener";
+    down.setAttribute("download", "");
+    down.textContent = t("download");
+    actions.appendChild(down);
+
+    el.appendChild(actions);
+    return el;
+  }
+
+  function renderChoices(container, items, active, onPick){
+    container.innerHTML = "";
+    items.forEach(function(item){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "choice";
+      b.setAttribute("aria-pressed", String(item.value === active));
+      b.textContent = item.label;
+      b.addEventListener("click", function(){ onPick(item.value); });
+      container.appendChild(b);
+    });
+  }
+
+  function renderLevels(){
+    var items = LEVELS.filter(function(l){ return availableSubjects(l).length; })
+      .map(function(l){ return {value:l, label:tr("levels", l)}; });
+    renderChoices($("levels"), items, state.level, function(v){
+      state.level = v; state.subject = null; state.year = null;
+      ensureSelection(); renderAll();
+    });
+  }
+
+  function renderSubjects(){
+    var items = availableSubjects(state.level).map(function(s){
+      return {value:s, label:tr("subjects", s)};
+    });
+    renderChoices($("subjects"), items, state.subject, function(v){
+      state.subject = v; state.year = null;
+      ensureSelection(); renderAll();
+    });
+  }
+
+  function renderYears(){
+    var years = availableYears(state.level, state.subject);
+    var items = years.map(function(y){
+      var meta = sessionMeta(y, "normal") || sessionMeta(y, "exceptional");
+      var label = y + (meta && meta.special ? " (" + t("specialSession") + ")" : "");
+      return {value:y, label:label};
+    });
+    renderChoices($("years"), items, state.year, function(v){
+      state.year = v; ensureSelection(); renderAll();
+    });
+  }
+
+  function renderSessions(){
+    var kinds = availableKinds(state.level, state.subject, state.year);
+    var items = kinds.map(function(k){ return {value:k, label:t(k)}; });
+    renderChoices($("sessions"), items, state.kind, function(v){
+      state.kind = v; renderAll();
+    });
+  }
+
+  function ensureSelection(){
+    var subjects = availableSubjects(state.level);
+    if(subjects.indexOf(state.subject) === -1) state.subject = subjects[0] || null;
+    if(!state.subject) { state.year = null; return; }
+    var years = availableYears(state.level, state.subject);
+    if(years.indexOf(String(state.year)) === -1) state.year = years[0] || null;
+    if(!state.year) return;
+    var kinds = availableKinds(state.level, state.subject, state.year);
+    if(kinds.indexOf(state.kind) === -1) state.kind = kinds[0] || "normal";
+  }
+
+  function renderResult(){
+    var bucket = currentBucket();
+    var exams = sortDocs(bucket.filter(function(d){ return !d.correction; }));
+    var corrections = bucket.filter(function(d){ return d.correction; });
+
+    var meta = sessionMeta(state.year, state.kind);
+    var sessionLabel = t(state.kind);
+    if(meta && meta.special) sessionLabel = t("specialSession");
+    $("result-title").textContent = tr("subjects", state.subject);
+    $("result-meta").textContent = tr("levels", state.level) + " · " + state.year + " · " + sessionLabel;
+    $("result-count").textContent = exams.length + " " + t("docs");
+
+    var docs = $("docs");
+    docs.innerHTML = "";
+    exams.forEach(function(d, i){ docs.appendChild(docNode(d, i === 0)); });
+
+    var corr = $("corrections");
+    var corrDocs = $("correctionDocs");
+    corrDocs.innerHTML = "";
+    if(corrections.length){
+      corr.hidden = false;
+      corrections.forEach(function(d, i){ corrDocs.appendChild(docNode(d, false)); });
+    }else{
+      corr.hidden = true;
+    }
+
+    var empty = $("empty");
+    if(!bucket.length){
+      empty.hidden = false;
+      empty.textContent = t("noResults");
+    }else{
+      empty.hidden = true;
+    }
+
+    renderSource(bucket[0]);
+  }
+
+  function renderSource(doc){
+    var s = $("source");
+    s.innerHTML = "";
+    var span = document.createElement("span");
+    span.textContent = t("source") + " · ";
+    s.appendChild(span);
+    var a = document.createElement("a");
+    a.href = (DATA && DATA.source) || "https://www.crdp.org/official-exams-corrections-lebanon";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "crdp.org";
+    s.appendChild(a);
+    if(doc){
+      var note = document.createElement("span");
+      note.textContent = " · " + doc.title;
+      s.appendChild(note);
+    }
+  }
+
+  function renderChrome(){
+    var lang = I18N[state.lang];
+    document.documentElement.lang = lang.lang;
+    document.documentElement.dir = lang.dir;
+    $("title").textContent = lang.title;
+    $("subtitle").textContent = lang.subtitle;
+    $("lbl-level").textContent = lang.level;
+    $("lbl-subject").textContent = lang.subject;
+    $("lbl-year").textContent = lang.year;
+    $("lbl-session").textContent = lang.session;
+    $("lbl-corrections").textContent = lang.corrections;
+    document.title = "CRDP — " + lang.title;
+    var buttons = document.querySelectorAll(".lang-switch button");
+    for(var i=0;i<buttons.length;i++){
+      buttons[i].classList.toggle("active", buttons[i].dataset.lang === state.lang);
+    }
+  }
+
+  function renderAll(){
+    renderChrome();
+    renderLevels();
+    renderSubjects();
+    renderYears();
+    renderSessions();
+    renderResult();
+  }
+
+  if(!DATA || !DATA.levels){
+    $("loadError").hidden = false;
+    return;
+  }
+
+  // language switch
+  var langButtons = document.querySelectorAll(".lang-switch button");
+  for(var i=0;i<langButtons.length;i++){
+    langButtons[i].addEventListener("click", function(){
+      state.lang = this.dataset.lang;
+      try{ localStorage.setItem("crdp-lang", state.lang); }catch(e){}
+      renderAll();
+    });
+  }
+  try{
+    var saved = localStorage.getItem("crdp-lang");
+    if(saved && I18N[saved]) state.lang = saved;
+  }catch(e){}
+
+  // pick a sensible default level: the first one with data
+  var firstLevel = LEVELS.filter(function(l){ return availableSubjects(l).length; })[0];
+  if(firstLevel) state.level = firstLevel;
+  ensureSelection();
+  renderAll();
+})();
 </script>
 </body>
 </html>

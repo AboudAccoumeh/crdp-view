@@ -102,6 +102,9 @@
     box-shadow:0 6px 16px -8px rgba(11,122,75,.8);
   }
   .choice .badge{display:inline-block;margin-inline-start:6px;font-size:11px;font-weight:700;opacity:.75}
+  .field-toggle{padding-top:14px}
+  .switch-row{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600}
+  .switch-row input{width:18px;height:18px;accent-color:var(--green);flex:0 0 auto;cursor:pointer;margin:0}
 
   /* ---------- result ---------- */
   .result{
@@ -132,7 +135,7 @@
   .doc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .tag{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:3px 7px;border-radius:5px;background:#eef2f0;color:#4c6258}
   .tag.lang{background:#e7f0ff;color:#245aa8}
-  .tag.special{background:#fff3dd;color:#95610a}
+  .tag.special{background:#ffdfae;color:#7d4300;border:1px solid #f0bc6a}
   .tag.correction{background:#f0e8ff;color:#6a3bb5}
   .doc-actions{display:flex;gap:7px;flex-wrap:wrap}
   .mini{
@@ -183,7 +186,7 @@
         </div>
         <div>
           <h1 id="title">مباريات الامتحانات الرسمية</h1>
-          <p id="subtitle">المركز التربوي للبحوث والإنماء — لبنان</p>
+          <p id="subtitle">كل المراحل والدورات في مكان واحد</p>
         </div>
       </div>
       <div class="lang-switch" role="group" aria-label="Language">
@@ -217,6 +220,12 @@
     <div class="field">
       <div class="field-head"><h2 id="lbl-session">الدورة</h2></div>
       <div class="choices" id="sessions" role="group"></div>
+    </div>
+    <div class="field field-toggle">
+      <label class="switch-row" for="showSpecial">
+        <input type="checkbox" id="showSpecial">
+        <span id="lbl-show-special"></span>
+      </label>
     </div>
   </section>
 
@@ -258,7 +267,7 @@
       open:"فتح", download:"تحميل", corrections:"أسس التصحيح والإجابات النموذجية",
       docs:"وثيقة", install:"تثبيت التطبيق", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
       source:"المصدر:",
-      special:"احتياجات خاصة", correction:"تصحيح",
+      special:"احتياجات خاصة", showSpecial:"إظهار امتحانات ذوي الاحتياجات الخاصة", correction:"تصحيح",
       normal:"دورة عادية", exceptional:"دورة استثنائية", specialSession:"دورة خاصة",
       levels:{
         brevet:"الشهادة المتوسطة — الصف التاسع",
@@ -284,7 +293,7 @@
       open:"Ouvrir", download:"Télécharger", corrections:"Corrigés et barèmes",
       docs:"document(s)", install:"Installer l'application", noResults:"Aucun document disponible pour cette sélection.",
       source:"Source :",
-      special:"Besoins spéciaux", correction:"Corrigé",
+      special:"Besoins spéciaux", showSpecial:"Afficher les épreuves adaptées", correction:"Corrigé",
       normal:"Session normale", exceptional:"Session exceptionnelle", specialSession:"Session spéciale",
       levels:{
         brevet:"Brevet — 9e année",
@@ -310,7 +319,7 @@
       open:"Open", download:"Download", corrections:"Marking schemes & answer keys",
       docs:"document(s)", install:"Install app", noResults:"No documents available for this selection.",
       source:"Source:",
-      special:"Special needs", correction:"Correction",
+      special:"Special needs", showSpecial:"Show special-needs papers", correction:"Correction",
       normal:"Regular session", exceptional:"Exceptional session", specialSession:"Special session",
       levels:{
         brevet:"Brevet — Grade 9",
@@ -330,7 +339,7 @@
     }
   };
 
-  var state = { lang:"ar", level:"sv", subject:"math", year:null, kind:"normal" };
+  var state = { lang:"ar", level:"sv", subject:"math", year:null, kind:"normal", showSpecial:false };
   var $ = function(id){ return document.getElementById(id); };
 
   function t(key){ return I18N[state.lang][key]; }
@@ -405,7 +414,8 @@
     main.className = "doc-main";
     var title = document.createElement("div");
     title.className = "doc-title";
-    title.textContent = tr("subjects", state.subject) + " — " + state.year;
+    title.textContent = tr("subjects", state.subject) + " — " + state.year
+      + (doc.special ? " · " + t("special") : "");
     main.appendChild(title);
 
     var tags = document.createElement("div");
@@ -510,8 +520,10 @@
 
   function renderResult(){
     var bucket = currentBucket();
-    var exams = sortDocs(bucket.filter(function(d){ return !d.correction; }));
-    var corrections = bucket.filter(function(d){ return d.correction; });
+    var hiddenSpecial = bucket.filter(function(d){ return d.special; }).length;
+    var visible = state.showSpecial ? bucket : bucket.filter(function(d){ return !d.special; });
+    var exams = sortDocs(visible.filter(function(d){ return !d.correction; }));
+    var corrections = visible.filter(function(d){ return d.correction; });
 
     var meta = sessionMeta(state.year, state.kind);
     var sessionLabel = t(state.kind);
@@ -519,6 +531,9 @@
     $("result-title").textContent = tr("subjects", state.subject);
     $("result-meta").textContent = tr("levels", state.level) + " · " + state.year + " · " + sessionLabel;
     $("result-count").textContent = exams.length + " " + t("docs");
+    $("showSpecial").checked = state.showSpecial;
+    $("lbl-show-special").textContent = t("showSpecial")
+      + (hiddenSpecial ? " (" + hiddenSpecial + ")" : "");
 
     var docs = $("docs");
     docs.innerHTML = "";
@@ -535,14 +550,14 @@
     }
 
     var empty = $("empty");
-    if(!bucket.length){
+    if(!visible.length){
       empty.hidden = false;
       empty.textContent = t("noResults");
     }else{
       empty.hidden = true;
     }
 
-    renderSource(bucket[0]);
+    renderSource(visible[0] || bucket[0]);
   }
 
   function renderSource(doc){
@@ -610,6 +625,11 @@
     var saved = localStorage.getItem("exam-lang");
     if(saved && I18N[saved]) state.lang = saved;
   }catch(e){}
+
+  $("showSpecial").addEventListener("change", function(){
+    state.showSpecial = this.checked;
+    renderResult();
+  });
 
   // PWA install prompt (Chrome/Edge). The button only appears when the
   // browser says the page is installable; iOS users can use Safari's

@@ -16,8 +16,9 @@ the source is credited only in a small link at the bottom of the page.
   exceptional sessions. (The 2020 listing exists but contains no documents.)
 - All subjects, not only the scientific stream.
 - Arabic, French and English interface, with RTL support for Arabic.
-- Exam papers, special-needs papers and marking schemes are kept apart so
-  the normal paper is always the first result.
+- Normal papers are shown first. Marking schemes are separated, and
+  special-needs / blind papers are hidden by default behind a clearly
+  labelled toggle that shows how many are hidden.
 - Installable progressive web app (PWA) with an offline app shell.
 
 ## Deploying to GitHub Pages

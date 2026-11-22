@@ -14,6 +14,8 @@ import time
 
 from bs4 import BeautifulSoup
 
+from classify_fix import detect_subject
+
 BASE = "https://www.crdp.org/official-exams-corrections-lebanon"
 PROGRESS = "progress.json"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -31,24 +33,6 @@ BRANCHES = {
     "sv": "70",
     "sh": "82",
 }
-
-SUBJECT_PATTERNS = [
-    ("arabic_philosophy", ["فلسفة عربية"]),
-    ("philosophy", ["فلسفة"]),
-    ("math", ["رياضيات"]),
-    ("physics", ["فيزياء"]),
-    ("chemistry", ["كيمياء"]),
-    ("biology", ["علوم الحياة والأرض", "علوم الحياة", "علوم طبيعية", "أحياء"]),
-    ("history", ["تاريخ"]),
-    ("geography", ["جغرافيا"]),
-    ("civics", ["تربية وطنية", "التنشئة المدنية", "تنشئة مدنية"]),
-    ("economics", ["اقتصاد"]),
-    ("sociology", ["اجتماع"]),
-    ("french", ["اللغة الفرنسية", "فرنسية", "فرنسي"]),
-    ("english", ["اللغة الانكليزية", "اللغة الإنكليزية", "إنكليزية", "انكليزية",
-                 "إنكليزي", "انكليزي", "english", "anglais"]),
-    ("arabic", ["اللغة العربية", "العربية وآدابها", "عربية", "عربي"]),
-]
 
 SPECIAL_RE = re.compile(r"احتياجات خاصة|مكفوفين|special needs|blind", re.I)
 CORRECTION_RE = re.compile(r"أسس التصحيح|اسس التصحيح|الإجابة النموذجية|الاجابة النموذجية|"
@@ -197,14 +181,6 @@ def levels_for_row(row, batch_level):
     return []
 
 
-def detect_subject(title):
-    t = title.lower()
-    for key, needles in SUBJECT_PATTERNS:
-        if any(n.lower() in t for n in needles):
-            return key
-    return "other"
-
-
 def detect_language(title, subject):
     t = title.lower()
     if "لغة عربية" in t or "بالعربية" in t or "عربي" in t:
@@ -242,7 +218,7 @@ def main():
         if not s:
             continue
         for row in batch["rows"]:
-            subj = detect_subject(row["title"])
+            subj = detect_subject(row["title"], row["url"])
             lang = detect_language(row["title"], subj)
             key = f"{s['year']}|{s['type']}"
             record = {

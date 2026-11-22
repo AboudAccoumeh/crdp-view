@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="CRDP Lebanon — official exam papers for all branches and sessions.">
-<title>CRDP — مباريات الامتحانات الرسمية</title>
+<meta name="description" content="Official exam papers for all Lebanese branches and sessions, in Arabic, French and English.">
+<title>مباريات الامتحانات الرسمية</title>
 <style>
   :root{
     --green:#0b7a4b;
@@ -49,9 +49,9 @@
   .mark{
     width:52px;height:52px;border-radius:16px;flex:0 0 auto;
     background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
-    display:grid;place-items:center;font-weight:800;letter-spacing:.5px;font-size:15px;
-    backdrop-filter:blur(4px);
+    display:grid;place-items:center;backdrop-filter:blur(4px);
   }
+  .mark svg{width:28px;height:28px;display:block}
   .brand h1{font-size:clamp(18px,2.4vw,26px);margin:0;line-height:1.25;font-weight:800}
   .brand p{margin:3px 0 0;font-size:13px;opacity:.82}
   .lang-switch{
@@ -162,7 +162,13 @@
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <div class="mark" aria-hidden="true">CRDP</div>
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2.75h8l4.5 4.5V20a1.25 1.25 0 0 1-1.25 1.25H6A1.25 1.25 0 0 1 4.75 20V4A1.25 1.25 0 0 1 6 2.75z"/>
+            <path d="M14 2.75v4.5h4.5"/>
+            <path d="M8 11.5h7M8 15h7M8 18.5h4"/>
+          </svg>
+        </div>
         <div>
           <h1 id="title">مباريات الامتحانات الرسمية</h1>
           <p id="subtitle">المركز التربوي للبحوث والإنماء — لبنان</p>
@@ -234,11 +240,11 @@
     ar:{
       dir:"rtl", lang:"ar",
       title:"مباريات الامتحانات الرسمية",
-      subtitle:"المركز التربوي للبحوث والإنماء — لبنان",
+      subtitle:"كل المراحل والدورات في مكان واحد",
       level:"المرحلة", subject:"المادة", year:"السنة", session:"الدورة",
       open:"فتح", download:"تحميل", corrections:"أسس التصحيح والإجابات النموذجية",
       docs:"وثيقة", noResults:"لا توجد وثائق متاحة لهذا الاختيار.",
-      source:"المصدر: موقع المركز التربوي للبحوث والإنماء",
+      source:"المصدر:",
       special:"احتياجات خاصة", correction:"تصحيح",
       normal:"دورة عادية", exceptional:"دورة استثنائية", specialSession:"دورة خاصة",
       levels:{
@@ -260,11 +266,11 @@
     fr:{
       dir:"ltr", lang:"fr",
       title:"Sujets des examens officiels",
-      subtitle:"Centre de Recherche et de Développement Pédagogiques — Liban",
+      subtitle:"Tous les niveaux et toutes les sessions au même endroit",
       level:"Niveau", subject:"Matière", year:"Année", session:"Session",
       open:"Ouvrir", download:"Télécharger", corrections:"Corrigés et barèmes",
       docs:"document(s)", noResults:"Aucun document disponible pour cette sélection.",
-      source:"Source : site du Centre de Recherche et de Développement Pédagogiques",
+      source:"Source :",
       special:"Besoins spéciaux", correction:"Corrigé",
       normal:"Session normale", exceptional:"Session exceptionnelle", specialSession:"Session spéciale",
       levels:{
@@ -286,11 +292,11 @@
     en:{
       dir:"ltr", lang:"en",
       title:"Official Exam Papers",
-      subtitle:"Educational Research and Development Center — Lebanon",
+      subtitle:"All levels and sessions in one place",
       level:"Level", subject:"Subject", year:"Year", session:"Session",
       open:"Open", download:"Download", corrections:"Marking schemes & answer keys",
       docs:"document(s)", noResults:"No documents available for this selection.",
-      source:"Source: Educational Research and Development Center website",
+      source:"Source:",
       special:"Special needs", correction:"Correction",
       normal:"Regular session", exceptional:"Exceptional session", specialSession:"Special session",
       levels:{
@@ -530,7 +536,7 @@
     var s = $("source");
     s.innerHTML = "";
     var span = document.createElement("span");
-    span.textContent = t("source") + " · ";
+    span.textContent = t("source") + " ";
     s.appendChild(span);
     var a = document.createElement("a");
     a.href = (DATA && DATA.source) || "https://www.crdp.org/official-exams-corrections-lebanon";
@@ -556,7 +562,7 @@
     $("lbl-year").textContent = lang.year;
     $("lbl-session").textContent = lang.session;
     $("lbl-corrections").textContent = lang.corrections;
-    document.title = "CRDP — " + lang.title;
+    document.title = lang.title;
     var buttons = document.querySelectorAll(".lang-switch button");
     for(var i=0;i<buttons.length;i++){
       buttons[i].classList.toggle("active", buttons[i].dataset.lang === state.lang);
@@ -582,12 +588,12 @@
   for(var i=0;i<langButtons.length;i++){
     langButtons[i].addEventListener("click", function(){
       state.lang = this.dataset.lang;
-      try{ localStorage.setItem("crdp-lang", state.lang); }catch(e){}
+      try{ localStorage.setItem("exam-lang", state.lang); }catch(e){}
       renderAll();
     });
   }
   try{
-    var saved = localStorage.getItem("crdp-lang");
+    var saved = localStorage.getItem("exam-lang");
     if(saved && I18N[saved]) state.lang = saved;
   }catch(e){}
 
